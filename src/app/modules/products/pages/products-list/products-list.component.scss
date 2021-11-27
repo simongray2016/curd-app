@@ -1,0 +1,9 @@
+.products-list {
+  .filter-section {
+    ::ng-deep {
+      .mat-form-field-wrapper {
+        padding: 0;
+      }
+    }
+  }
+}

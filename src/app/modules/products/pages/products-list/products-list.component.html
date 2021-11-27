@@ -1,1 +1,164 @@
-<p>products-list works!</p>
+<div
+  class="products-list h-screen bg-gray-100 flex flex-col justify-self-stretch"
+>
+  <div class="flex justify-between p-10">
+    <div class="text-4xl font-extrabold tracking-tight">Products</div>
+    <div class="filter-section flex items-center">
+      <!-- Seach input -->
+      <mat-form-field appearance="outline">
+        <mat-label>Search</mat-label>
+        <input matInput />
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+
+      <!-- Filter menu -->
+      <button
+        class="ml-5"
+        mat-raised-button
+        color="accent"
+        [matMenuTriggerFor]="menu"
+      >
+        Filter
+      </button>
+      <mat-menu class="w-72 p-5" #menu="matMenu">
+        <div (click)="$event.stopPropagation()">
+          <mat-form-field class="w-full" appearance="outline">
+            <mat-label>Category</mat-label>
+            <mat-select>
+              <mat-option> hehe </mat-option>
+              <mat-option> haha </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field class="w-full" appearance="outline">
+            <mat-label>Category</mat-label>
+            <mat-select>
+              <mat-option> hehe </mat-option>
+              <mat-option> haha </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="flex justify-end">
+            <button class="ml-5" mat-raised-button>Reset</button>
+            <button class="ml-5" mat-raised-button color="primary">
+              Apply
+            </button>
+          </div>
+        </div>
+      </mat-menu>
+
+      <!-- Create button -->
+      <button class="ml-5" mat-raised-button color="primary">
+        Create product
+      </button>
+    </div>
+  </div>
+  <ng-container *ngIf="products$ | async as product">
+    <div class="mx-10 overflow-auto h-full">
+      <table
+        mat-table
+        matSort
+        (matSortChange)="announceSortChange($event)"
+        [dataSource]="product"
+        class="w-full border-collapse mat-elevation-z8"
+      >
+        <!-- Selection Column -->
+        <ng-container matColumnDef="selection">
+          <th class="w-1/12" mat-header-cell *matHeaderCellDef>
+            <mat-checkbox color="primary"> </mat-checkbox>
+          </th>
+          <td mat-cell *matCellDef="let product">
+            <mat-checkbox color="primary"> </mat-checkbox>
+          </td>
+        </ng-container>
+
+        <!-- Img Column -->
+        <ng-container matColumnDef="img">
+          <th class="w-1/12" mat-header-cell *matHeaderCellDef></th>
+          <td class="py-3" mat-cell *matCellDef="let product">
+            <img
+              class="w-10 h-10 rounded-md border border-gray-300"
+              [src]="product.imgUrl"
+              alt=""
+            />
+          </td>
+        </ng-container>
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+          <th class="w-3/12" mat-header-cell *matHeaderCellDef mat-sort-header>
+            Name
+          </th>
+          <td mat-cell *matCellDef="let product">{{ product.name }}</td>
+        </ng-container>
+
+        <!-- Price Column -->
+        <ng-container matColumnDef="price">
+          <th class="w-1/12" mat-header-cell *matHeaderCellDef mat-sort-header>
+            Price
+          </th>
+          <td mat-cell *matCellDef="let product">{{ product.price }}</td>
+        </ng-container>
+
+        <!-- Stock Column -->
+        <ng-container matColumnDef="stock">
+          <th class="w-1/12" mat-header-cell *matHeaderCellDef mat-sort-header>
+            Stock
+          </th>
+          <td mat-cell *matCellDef="let product">{{ product.stock }}</td>
+        </ng-container>
+
+        <!-- Created date Column -->
+        <ng-container matColumnDef="created date">
+          <th class="w-2/12" mat-header-cell *matHeaderCellDef mat-sort-header>
+            Created date
+          </th>
+          <td mat-cell *matCellDef="let product">
+            {{ product.createAt | date }}
+          </td>
+        </ng-container>
+
+        <!-- Category Column -->
+        <ng-container matColumnDef="category">
+          <th class="w-1/12" mat-header-cell *matHeaderCellDef mat-sort-header>
+            Category
+          </th>
+          <td mat-cell *matCellDef="let product">{{ product.category }}</td>
+        </ng-container>
+
+        <!-- Status Column -->
+        <ng-container matColumnDef="status">
+          <th class="w-1/12" mat-header-cell *matHeaderCellDef mat-sort-header>
+            Status
+          </th>
+          <td mat-cell *matCellDef="let product">{{ product.status }}</td>
+        </ng-container>
+
+        <!-- Action Column -->
+        <ng-container matColumnDef="action">
+          <th class="w-2/12" mat-header-cell *matHeaderCellDef>Action</th>
+          <td mat-cell *matCellDef="let product"></td>
+        </ng-container>
+
+        <tr
+          class="bg-gray-300"
+          mat-header-row
+          *matHeaderRowDef="displayedColumns; sticky: true"
+        ></tr>
+        <tr
+          class="hover:bg-gray-100"
+          mat-row
+          *matRowDef="let row; columns: displayedColumns"
+        ></tr>
+      </table>
+    </div>
+    <div class="mx-10">
+      <mat-paginator
+        [length]="100"
+        [pageSize]="10"
+        [pageSizeOptions]="[5, 10, 25, 100]"
+        aria-label="Select page"
+        class="bg-gray-300"
+      >
+      </mat-paginator>
+    </div>
+  </ng-container>
+</div>
