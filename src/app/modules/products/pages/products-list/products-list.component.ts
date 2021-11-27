@@ -11,6 +11,7 @@ import {
 import { GlobalStateService } from 'src/app/services/global-state.service';
 import { ProductsService } from 'src/app/services/products.service';
 import { ComfirmDeleteModalComponent } from '../../components/comfirm-delete-modal/comfirm-delete-modal.component';
+import { Sort } from '@angular/material/sort';
 
 @Component({
   selector: 'app-products-list',
@@ -33,7 +34,7 @@ export class ProductsListComponent implements OnInit {
     'name',
     'price',
     'stock',
-    'created date',
+    'createAt',
     'category',
     'status',
     'action',
@@ -159,5 +160,13 @@ export class ProductsListComponent implements OnInit {
       });
   }
 
-  announceSortChange(event: any) {}
+  announceSortChange(event: Sort) {
+    if (event.direction) {
+      this.setProductQueries({ sort: event.active, order: event.direction });
+    } else {
+      this.setProductQueries({ sort: undefined, order: undefined });
+    }
+
+    this.getProductsPaginated();
+  }
 }
