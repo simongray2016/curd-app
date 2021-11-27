@@ -16,10 +16,10 @@ import {
 export class ProductsService {
   baseUrl: string;
 
-  private $productsSubject = new BehaviorSubject<IProduct[]>([]);
+  private productsSubject$ = new BehaviorSubject<IProduct[]>([]);
 
-  get $products(): Observable<IProduct[]> {
-    return this.$productsSubject.asObservable();
+  get products$(): Observable<IProduct[]> {
+    return this.productsSubject$.asObservable();
   }
 
   constructor(private _http: HttpClient, private _snackBar: MatSnackBar) {
@@ -27,7 +27,7 @@ export class ProductsService {
   }
 
   setProductsList(products: IProduct[]) {
-    this.$productsSubject.next(products);
+    this.productsSubject$.next(products);
   }
 
   getProductsPaginated(
