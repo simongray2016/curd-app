@@ -1,7 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
-import { finalize, forkJoin, Observable } from 'rxjs';
+import {
+  finalize,
+  forkJoin,
+  Observable,
+  Subject,
+  takeUntil,
+  throttleTime,
+} from 'rxjs';
 import { intersectionBy } from 'lodash';
 import {
   GetProductsPaginatedOption,
@@ -12,13 +19,15 @@ import { GlobalStateService } from 'src/app/services/global-state.service';
 import { ProductsService } from 'src/app/services/products.service';
 import { ComfirmDeleteModalComponent } from '../../components/comfirm-delete-modal/comfirm-delete-modal.component';
 import { Sort } from '@angular/material/sort';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-products-list',
   templateUrl: './products-list.component.html',
   styleUrls: ['./products-list.component.scss'],
 })
-export class ProductsListComponent implements OnInit {
+export class ProductsListComponent implements OnInit, OnDestroy {
+  destroy$ = new Subject<null>();
   products$: Observable<IProduct[]>;
   productsQueries: GetProductsPaginatedOption = {
     page: 1,
@@ -26,6 +35,7 @@ export class ProductsListComponent implements OnInit {
   };
   productsLength = 0;
   productsSelection: IProduct[] = [];
+  searchProductControl = new FormControl('');
 
   readonly pageSizeDefault = 1;
   displayedColumns = [
@@ -49,7 +59,22 @@ export class ProductsListComponent implements OnInit {
     this.getProductsPaginated();
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.listenSearchControl();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next(null);
+  }
+
+  listenSearchControl() {
+    this.searchProductControl.valueChanges
+      .pipe(throttleTime(300), takeUntil(this.destroy$))
+      .subscribe((search: string) => {
+        this.setProductQueries({ search });
+        this.getProductsPaginated();
+      });
+  }
 
   setProductQueries(queries: ProductsQueries) {
     this.productsQueries = {

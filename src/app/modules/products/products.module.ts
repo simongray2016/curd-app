@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProductsRoutingModule } from './products-routing.module';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -26,6 +27,7 @@ import { ComfirmDeleteModalComponent } from './components/comfirm-delete-modal/c
   imports: [
     CommonModule,
     ProductsRoutingModule,
+    ReactiveFormsModule,
     MatTableModule,
     MatPaginatorModule,
     MatCheckboxModule,

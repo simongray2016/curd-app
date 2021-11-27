@@ -9,7 +9,7 @@
         <!-- Seach input -->
         <mat-form-field appearance="outline">
           <mat-label>Search</mat-label>
-          <input matInput />
+          <input [formControl]="searchProductControl" matInput />
           <mat-icon matSuffix>search</mat-icon>
         </mat-form-field>
 
