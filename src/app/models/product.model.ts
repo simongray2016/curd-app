@@ -29,6 +29,8 @@ export interface GetProductsPaginatedOption {
   sort?: string;
   order?: 'desc' | 'asc';
   search?: string;
+  category?: string;
+  status?: string;
 }
 
 export type ProductsQueries = Partial<GetProductsPaginatedOption>;

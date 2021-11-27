@@ -23,28 +23,36 @@
           Filter
         </button>
         <mat-menu class="w-72 p-5" #menu="matMenu">
-          <div (click)="$event.stopPropagation()">
+          <form
+            (click)="$event.stopPropagation()"
+            [formGroup]="filterFormGroup"
+          >
             <mat-form-field class="w-full" appearance="outline">
               <mat-label>Category</mat-label>
-              <mat-select>
-                <mat-option> hehe </mat-option>
-                <mat-option> haha </mat-option>
+              <mat-select formControlName="category">
+                <mat-option
+                  *ngFor="let category of categories"
+                  [value]="category"
+                >
+                  {{ category }}
+                </mat-option>
               </mat-select>
             </mat-form-field>
             <mat-form-field class="w-full" appearance="outline">
-              <mat-label>Category</mat-label>
-              <mat-select>
-                <mat-option> hehe </mat-option>
-                <mat-option> haha </mat-option>
+              <mat-label>Status</mat-label>
+              <mat-select formControlName="status">
+                <mat-option *ngFor="let status of statuses" [value]="status">
+                  {{ status }}
+                </mat-option>
               </mat-select>
             </mat-form-field>
             <div class="flex justify-end">
-              <button class="ml-5" mat-raised-button>Reset</button>
-              <button class="ml-5" mat-raised-button color="primary">
+              <button class="ml-5" mat-raised-button (click)="resetFilter()">Reset</button>
+              <button class="ml-5" mat-raised-button color="primary" (click)="applyFilter()">
                 Apply
               </button>
             </div>
-          </div>
+          </form>
         </mat-menu>
 
         <!-- Create button -->

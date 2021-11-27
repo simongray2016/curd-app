@@ -43,7 +43,7 @@ export class ProductsService {
   }
 
   getProductsPaginated(option: GetProductsPaginatedOption): Observable<any> {
-    const { page, limit, sort, order, search } = option;
+    const { page, limit, sort, order, search, category, status } = option;
 
     let params = new HttpParams().set('_page', page).set('_limit', limit);
 
@@ -53,6 +53,14 @@ export class ProductsService {
 
     if (search) {
       params = params.set('q', search);
+    }
+
+    if (category) {
+      params = params.set('category', category);
+    }
+
+    if (status) {
+      params = params.set('status', status);
     }
 
     return this._http

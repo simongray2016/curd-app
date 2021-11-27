@@ -11,6 +11,8 @@ import {
 } from 'rxjs';
 import { intersectionBy } from 'lodash';
 import {
+  ECategory,
+  EStatus,
   GetProductsPaginatedOption,
   IProduct,
   ProductsQueries,
@@ -19,7 +21,7 @@ import { GlobalStateService } from 'src/app/services/global-state.service';
 import { ProductsService } from 'src/app/services/products.service';
 import { ComfirmDeleteModalComponent } from '../../components/comfirm-delete-modal/comfirm-delete-modal.component';
 import { Sort } from '@angular/material/sort';
-import { FormControl } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-products-list',
@@ -36,8 +38,7 @@ export class ProductsListComponent implements OnInit, OnDestroy {
   productsLength = 0;
   productsSelection: IProduct[] = [];
   searchProductControl = new FormControl('');
-
-  readonly pageSizeDefault = 1;
+  filterFormGroup: FormGroup;
   displayedColumns = [
     'selection',
     'img',
@@ -49,12 +50,19 @@ export class ProductsListComponent implements OnInit, OnDestroy {
     'status',
     'action',
   ];
+  categories = Object.values(ECategory);
+  statuses = Object.values(EStatus);
 
   constructor(
     private _productsService: ProductsService,
     private _globalStateService: GlobalStateService,
-    private _dialog: MatDialog
+    private _dialog: MatDialog,
+    private _formBuilder: FormBuilder
   ) {
+    this.filterFormGroup = this._formBuilder.group({
+      category: [''],
+      status: [''],
+    });
     this.products$ = this._productsService.products$;
     this.getProductsPaginated();
   }
@@ -67,6 +75,7 @@ export class ProductsListComponent implements OnInit, OnDestroy {
     this.destroy$.next(null);
   }
 
+  // Search
   listenSearchControl() {
     this.searchProductControl.valueChanges
       .pipe(throttleTime(300), takeUntil(this.destroy$))
@@ -179,12 +188,13 @@ export class ProductsListComponent implements OnInit, OnDestroy {
     );
 
     forkJoin(deleteProductApis)
-      .pipe(finalize(() => this._globalStateService.setLoading(true)))
+      .pipe(finalize(() => this._globalStateService.setLoading(false)))
       .subscribe(() => {
         this.resetProductsList();
       });
   }
 
+  // Sort
   announceSortChange(event: Sort) {
     if (event.direction) {
       this.setProductQueries({ sort: event.active, order: event.direction });
@@ -193,5 +203,25 @@ export class ProductsListComponent implements OnInit, OnDestroy {
     }
 
     this.getProductsPaginated();
+  }
+
+  // Filter
+  resetFilter() {
+    this.filterFormGroup.reset();
+    this.setProductQueries({ category: undefined, status: undefined });
+    this.getProductsPaginated();
+  }
+
+  applyFilter() {
+    const { category, status } = this.filterFormGroup.value;
+
+    if (category || status) {
+      this.setProductQueries({
+        category: category || undefined,
+        status: status || undefined,
+      });
+
+      this.getProductsPaginated();
+    }
   }
 }
