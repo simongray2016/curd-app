@@ -30,4 +30,6 @@ export interface GetProductsPaginatedOption {
   order?: 'desc' | 'asc';
 }
 
-export type IProductCreated = Omit<IProduct, 'id'>;
+export type ProductsQueries = Partial<GetProductsPaginatedOption>;
+
+export type ProductCreated = Omit<IProduct, 'id'>;

@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { finalize, Observable } from 'rxjs';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { BehaviorSubject, finalize, Observable, Subject } from 'rxjs';
 import {
   GetProductsPaginatedOption,
   IProduct,
+  ProductsQueries,
 } from 'src/app/models/product.model';
 import { GlobalStateService } from 'src/app/services/global-state.service';
 import { ProductsService } from 'src/app/services/products.service';
@@ -12,9 +14,17 @@ import { ProductsService } from 'src/app/services/products.service';
   templateUrl: './products-list.component.html',
   styleUrls: ['./products-list.component.scss'],
 })
-export class ProductsListComponent implements OnInit {
-  products$: Observable<IProduct[]>;
+export class ProductsListComponent implements OnInit, AfterViewInit {
+  @ViewChild(MatPaginator, { static: false }) paginator?: MatPaginator;
 
+  products$: Observable<IProduct[]>;
+  productsQueries: GetProductsPaginatedOption = {
+    page: 1,
+    limit: 10,
+  };
+  productsLength = 0;
+
+  readonly pageSizeDefault = 1;
   displayedColumns = [
     'selection',
     'img',
@@ -35,7 +45,15 @@ export class ProductsListComponent implements OnInit {
     this.getProductsPaginated({ page: 1, limit: 20 });
   }
 
-  ngOnInit(): void {
+  ngOnInit(): void {}
+
+  ngAfterViewInit(): void {}
+
+  setProductQueries(queries: ProductsQueries) {
+    this.productsQueries = {
+      ...this.productsQueries,
+      ...queries,
+    };
   }
 
   getProductsPaginated(option: GetProductsPaginatedOption) {
@@ -44,10 +62,20 @@ export class ProductsListComponent implements OnInit {
     this._productsService
       .getProductsPaginated(option)
       .pipe(finalize(() => this._globalStateService.setLoading(false)))
-      .subscribe((product) => this._productsService.setProductsList(product));
+      .subscribe((data) => {
+        this._productsService.setProductsList(data.products);
+        this.productsLength = data.total;
+      });
   }
 
-  announceSortChange(event: any) {
-    
+  paginatorChange(event: PageEvent) {
+    this.setProductQueries({
+      page: event.pageIndex + 1,
+      limit: event.pageSize,
+    });
+
+    this.getProductsPaginated(this.productsQueries);
   }
+
+  announceSortChange(event: any) {}
 }

@@ -1,13 +1,21 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { BehaviorSubject, catchError, Observable, of, throwError } from 'rxjs';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
+import {
+  BehaviorSubject,
+  catchError,
+  delay,
+  map,
+  Observable,
+  of,
+  throwError,
+} from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import {
   GetProductsPaginatedOption,
   IProduct,
-  IProductCreated,
+  ProductCreated,
 } from '../models/product.model';
 
 @Injectable({
@@ -30,9 +38,7 @@ export class ProductsService {
     this.productsSubject$.next(products);
   }
 
-  getProductsPaginated(
-    option: GetProductsPaginatedOption
-  ): Observable<IProduct[]> {
+  getProductsPaginated(option: GetProductsPaginatedOption): Observable<any> {
     const { page, limit, sort, order } = option;
 
     let params = new HttpParams().set('_page', page).set('_limit', limit);
@@ -42,8 +48,15 @@ export class ProductsService {
     }
 
     return this._http
-      .get<IProduct[]>(`${this.baseUrl}/products`, { params })
-      .pipe(catchError(() => this.errorHandled()));
+      .get(`${this.baseUrl}/products`, { params, observe: 'response' })
+      .pipe(
+        delay(500),
+        map((res: HttpResponse<any>) => ({
+          total: res.headers.get('X-Total-Count'),
+          products: res.body,
+        })),
+        catchError(() => this.errorHandled())
+      );
   }
 
   getProductDetail(productId: number): Observable<IProduct> {
@@ -52,7 +65,7 @@ export class ProductsService {
       .pipe(catchError(() => this.errorHandled()));
   }
 
-  createProduct(productCreated: IProductCreated): Observable<IProduct> {
+  createProduct(productCreated: ProductCreated): Observable<IProduct> {
     return this._http
       .post<IProduct>(`${this.baseUrl}/products/`, { ...productCreated })
       .pipe(catchError(() => this.errorHandled()));
