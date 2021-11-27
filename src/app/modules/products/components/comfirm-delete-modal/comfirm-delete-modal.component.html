@@ -1,0 +1,13 @@
+<div mat-dialog-content>
+  <div class="text-center flex items-center">
+    Are you sure you want to delete selected ?
+  </div>
+</div>
+<div mat-dialog-actions class="flex items-center justify-center">
+  <button class="w-28" mat-raised-button color="warn" (click)="onClose(true)">
+    Delete
+  </button>
+  <button class="w-28 ml-5" mat-raised-button (click)="onClose()">
+    Cancel
+  </button>
+</div>

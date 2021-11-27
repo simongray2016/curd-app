@@ -1,72 +1,106 @@
 <div
   class="products-list h-screen bg-gray-100 flex flex-col justify-self-stretch"
 >
-  <div class="flex justify-between p-10">
+  <div class="flex justify-between p-10 h-52">
     <div class="text-4xl font-extrabold tracking-tight">Products</div>
     <div class="filter-section flex items-center">
-      <!-- Seach input -->
-      <mat-form-field appearance="outline">
-        <mat-label>Search</mat-label>
-        <input matInput />
-        <mat-icon matSuffix>search</mat-icon>
-      </mat-form-field>
+      <!-- Search, filter section hide when products selected -->
+      <ng-container *ngIf="!productsSelection.length; else deleteSection">
+        <!-- Seach input -->
+        <mat-form-field appearance="outline">
+          <mat-label>Search</mat-label>
+          <input matInput />
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
 
-      <!-- Filter menu -->
-      <button
-        class="ml-5"
-        mat-raised-button
-        color="accent"
-        [matMenuTriggerFor]="menu"
-      >
-        Filter
-      </button>
-      <mat-menu class="w-72 p-5" #menu="matMenu">
-        <div (click)="$event.stopPropagation()">
-          <mat-form-field class="w-full" appearance="outline">
-            <mat-label>Category</mat-label>
-            <mat-select>
-              <mat-option> hehe </mat-option>
-              <mat-option> haha </mat-option>
-            </mat-select>
-          </mat-form-field>
-          <mat-form-field class="w-full" appearance="outline">
-            <mat-label>Category</mat-label>
-            <mat-select>
-              <mat-option> hehe </mat-option>
-              <mat-option> haha </mat-option>
-            </mat-select>
-          </mat-form-field>
-          <div class="flex justify-end">
-            <button class="ml-5" mat-raised-button>Reset</button>
-            <button class="ml-5" mat-raised-button color="primary">
-              Apply
-            </button>
+        <!-- Filter menu -->
+        <button
+          class="ml-5"
+          mat-raised-button
+          color="accent"
+          [matMenuTriggerFor]="menu"
+        >
+          Filter
+        </button>
+        <mat-menu class="w-72 p-5" #menu="matMenu">
+          <div (click)="$event.stopPropagation()">
+            <mat-form-field class="w-full" appearance="outline">
+              <mat-label>Category</mat-label>
+              <mat-select>
+                <mat-option> hehe </mat-option>
+                <mat-option> haha </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field class="w-full" appearance="outline">
+              <mat-label>Category</mat-label>
+              <mat-select>
+                <mat-option> hehe </mat-option>
+                <mat-option> haha </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <div class="flex justify-end">
+              <button class="ml-5" mat-raised-button>Reset</button>
+              <button class="ml-5" mat-raised-button color="primary">
+                Apply
+              </button>
+            </div>
           </div>
-        </div>
-      </mat-menu>
+        </mat-menu>
 
-      <!-- Create button -->
-      <button class="ml-5" mat-raised-button color="primary">
-        Create product
-      </button>
+        <!-- Create button -->
+        <button class="ml-5" mat-raised-button color="primary">
+          Create product
+        </button>
+      </ng-container>
+
+      <!-- Delete section when products selected -->
+      <ng-template #deleteSection>
+        <div class="font-bold">{{ productsSelection.length }} selected</div>
+
+        <!-- Delete button -->
+        <button
+          class="ml-5"
+          mat-raised-button
+          color="warn"
+          (click)="openConfirmDeleteModal()"
+        >
+          Delete selected
+        </button>
+      </ng-template>
     </div>
   </div>
-  <ng-container *ngIf="products$ | async as product">
+  <ng-container *ngIf="products$ | async as products">
     <div class="mx-10 overflow-auto h-full">
       <table
         mat-table
         matSort
         (matSortChange)="announceSortChange($event)"
-        [dataSource]="product"
+        [dataSource]="products"
         class="w-full border-collapse mat-elevation-z8"
       >
         <!-- Selection Column -->
         <ng-container matColumnDef="selection">
           <th class="w-1/12" mat-header-cell *matHeaderCellDef>
-            <mat-checkbox color="primary"> </mat-checkbox>
+            <mat-checkbox
+              color="primary"
+              (change)="$event ? masterToggle(products) : null"
+              [checked]="
+                !!productsSelection.length && isAllSelected(products.length)
+              "
+              [indeterminate]="
+                !!productsSelection.length && !isAllSelected(products.length)
+              "
+            >
+            </mat-checkbox>
           </th>
           <td mat-cell *matCellDef="let product">
-            <mat-checkbox color="primary"> </mat-checkbox>
+            <mat-checkbox
+              color="primary"
+              (click)="$event.stopPropagation()"
+              (change)="$event ? toggle(product) : null"
+              [checked]="isSelected(product.id)"
+            >
+            </mat-checkbox>
           </td>
         </ng-container>
 

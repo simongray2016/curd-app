@@ -79,10 +79,10 @@ export class ProductsService {
       .pipe(catchError(() => this.errorHandled()));
   }
 
-  deleteProduct(productId: number) {
+  deleteProduct(productId: string) {
     return this._http
       .delete(`${this.baseUrl}/products/${productId}`)
-      .pipe(catchError(() => this.errorHandled()));
+      .pipe(catchError(() => of(null)));
   }
 
   errorHandled() {

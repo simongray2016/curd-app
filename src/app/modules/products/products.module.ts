@@ -11,12 +11,18 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
+import { MatDialogModule } from '@angular/material/dialog';
 
 import { ProductsListComponent } from './pages/products-list/products-list.component';
 import { ProductDetailComponent } from './pages/product-detail/product-detail.component';
+import { ComfirmDeleteModalComponent } from './components/comfirm-delete-modal/comfirm-delete-modal.component';
 
 @NgModule({
-  declarations: [ProductsListComponent, ProductDetailComponent],
+  declarations: [
+    ProductsListComponent,
+    ProductDetailComponent,
+    ComfirmDeleteModalComponent,
+  ],
   imports: [
     CommonModule,
     ProductsRoutingModule,
@@ -30,6 +36,7 @@ import { ProductDetailComponent } from './pages/product-detail/product-detail.co
     MatButtonModule,
     MatMenuModule,
     MatSelectModule,
+    MatDialogModule,
   ],
 })
 export class ProductsModule {}
