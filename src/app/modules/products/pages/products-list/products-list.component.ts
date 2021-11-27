@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
-import { finalize, forkJoin, Observable, switchMap } from 'rxjs';
+import { finalize, forkJoin, Observable } from 'rxjs';
+import { intersectionBy } from 'lodash';
 import {
   GetProductsPaginatedOption,
   IProduct,
@@ -72,6 +73,9 @@ export class ProductsListComponent implements OnInit {
       .subscribe((data) => {
         this._productsService.setProductsList(data.products);
         this.productsLength = data.total;
+
+        // Filter selected items in new products list when get new products
+        this.intersectSelectionAndProducts();
       });
   }
 
@@ -121,6 +125,15 @@ export class ProductsListComponent implements OnInit {
     }
 
     this.productsSelection = [...this.productsSelection, product];
+  }
+
+  // Filter selected items in new products list when get new products
+  intersectSelectionAndProducts() {
+    this.productsSelection = intersectionBy(
+      this.productsSelection,
+      this._productsService.products,
+      'id'
+    );
   }
 
   // Handle delete

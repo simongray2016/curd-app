@@ -30,6 +30,10 @@ export class ProductsService {
     return this.productsSubject$.asObservable();
   }
 
+  get products(): IProduct[] {
+    return this.productsSubject$.value;
+  }
+
   constructor(private _http: HttpClient, private _snackBar: MatSnackBar) {
     this.baseUrl = environment.apiUrl;
   }
