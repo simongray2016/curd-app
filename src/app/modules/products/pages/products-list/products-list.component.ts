@@ -2,12 +2,16 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
 import {
+  catchError,
+  debounceTime,
   finalize,
   forkJoin,
   Observable,
+  of,
   Subject,
+  switchMap,
   takeUntil,
-  throttleTime,
+  tap,
 } from 'rxjs';
 import { intersectionBy } from 'lodash';
 import {
@@ -78,10 +82,25 @@ export class ProductsListComponent implements OnInit, OnDestroy {
   // Search
   listenSearchControl() {
     this.searchProductControl.valueChanges
-      .pipe(throttleTime(300), takeUntil(this.destroy$))
-      .subscribe((search: string) => {
-        this.setProductQueries({ search });
-        this.getProductsPaginated();
+      .pipe(
+        debounceTime(200),
+        takeUntil(this.destroy$),
+        tap(() => this._globalStateService.setLoading(true)),
+        switchMap((search: string) => {
+          this.setProductQueries({ search });
+
+          return this._productsService.getProductsPaginated(
+            this.productsQueries
+          );
+        }),
+        catchError(() => of(null))
+      )
+      .subscribe((data) => {
+        this._globalStateService.setLoading(false);
+        if (data !== null) {
+          this._productsService.setProductsList(data.products);
+          this.productsLength = data.total;
+        }
       });
   }
 

@@ -42,7 +42,10 @@ export class ProductsService {
     this.productsSubject$.next(products);
   }
 
-  getProductsPaginated(option: GetProductsPaginatedOption): Observable<any> {
+  getProductsPaginated(option: GetProductsPaginatedOption): Observable<{
+    total: number;
+    products: IProduct[];
+  }> {
     const { page, limit, sort, order, search, category, status } = option;
 
     let params = new HttpParams().set('_page', page).set('_limit', limit);
@@ -64,12 +67,15 @@ export class ProductsService {
     }
 
     return this._http
-      .get(`${this.baseUrl}/products`, { params, observe: 'response' })
+      .get<IProduct[]>(`${this.baseUrl}/products`, {
+        params,
+        observe: 'response',
+      })
       .pipe(
         delay(500),
-        map((res: HttpResponse<any>) => ({
-          total: res.headers.get('X-Total-Count'),
-          products: res.body,
+        map((res: HttpResponse<IProduct[]>) => ({
+          total: parseInt(res.headers.get('X-Total-Count') ?? '0'),
+          products: res.body ?? [],
         })),
         catchError(() => this.errorHandled())
       );
