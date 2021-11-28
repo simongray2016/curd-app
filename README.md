@@ -1,27 +1,35 @@
-# CurdApp
+# CURD App
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.0.3.
+A simplified CURD application built with Angular, Angular Material and TailwindCSS
 
-## Development server
+## Setting up development environment
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+Run commands by steps:
 
-## Code scaffolding
+- `git clone https://github.com/simongray2016/curd-app.git`
+- `cd curd-app`
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+The application uses [JSON Server](https://github.com/typicode/json-server#getting-started) for mock REST API so you should generate the server by following the steps:
 
-## Build
+- `npm run generate`
+- `npm run server`
+- The API server should run on `http://localhost:3000`
+- `npm run start` for angular web application
+- The angular web application should run on `http://localhost:4200/`
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+## Main features
 
-## Running unit tests
+- Create item
+- Update item
+- Read item
+- Delete item
+- Search item
+- Sort items list
+- Filter items list
+- Pagination
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+# Tech stack
+- [Angular](https://angular.io/)
+- [Angular Material](https://material.angular.io/)
+- [TailwindCSS](https://tailwindcss.com/)
+- [JSON Server](https://github.com/typicode/json-server)
