@@ -15,7 +15,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import {
   GetProductsPaginatedOption,
   IProduct,
-  ProductCreated,
+  ProductFormBody,
 } from '../models/product.model';
 
 @Injectable({
@@ -81,23 +81,21 @@ export class ProductsService {
       );
   }
 
-  getProductDetail(productId: number): Observable<IProduct> {
+  getProductDetail(productId: string): Observable<IProduct> {
     return this._http
       .get<IProduct>(`${this.baseUrl}/products/${productId}`)
       .pipe(catchError(() => this.errorHandled()));
   }
 
-  createProduct(productCreated: ProductCreated): Observable<IProduct> {
+  createProduct(body: ProductFormBody): Observable<IProduct> {
     return this._http
-      .post<IProduct>(`${this.baseUrl}/products/`, { ...productCreated })
+      .post<IProduct>(`${this.baseUrl}/products/`, body)
       .pipe(catchError(() => this.errorHandled()));
   }
 
-  editProduct(product: IProduct): Observable<IProduct> {
+  editProduct(id: string, body: ProductFormBody): Observable<IProduct> {
     return this._http
-      .put<IProduct>(`${this.baseUrl}/products/${product.id}`, {
-        product,
-      })
+      .put<IProduct>(`${this.baseUrl}/products/${id}`, body)
       .pipe(catchError(() => this.errorHandled()));
   }
 

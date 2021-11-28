@@ -35,4 +35,4 @@ export interface GetProductsPaginatedOption {
 
 export type ProductsQueries = Partial<GetProductsPaginatedOption>;
 
-export type ProductCreated = Omit<IProduct, 'id'>;
+export type ProductFormBody = Omit<IProduct, 'id'>;

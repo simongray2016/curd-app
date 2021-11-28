@@ -26,6 +26,8 @@ import { ProductsService } from 'src/app/services/products.service';
 import { ComfirmDeleteModalComponent } from '../../components/comfirm-delete-modal/comfirm-delete-modal.component';
 import { Sort } from '@angular/material/sort';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-products-list',
@@ -61,7 +63,10 @@ export class ProductsListComponent implements OnInit, OnDestroy {
     private _productsService: ProductsService,
     private _globalStateService: GlobalStateService,
     private _dialog: MatDialog,
-    private _formBuilder: FormBuilder
+    private _formBuilder: FormBuilder,
+    private _snackBar: MatSnackBar,
+    private _router: Router,
+    private _route: ActivatedRoute
   ) {
     this.filterFormGroup = this._formBuilder.group({
       category: [''],
@@ -209,7 +214,19 @@ export class ProductsListComponent implements OnInit, OnDestroy {
     forkJoin(deleteProductApis)
       .pipe(finalize(() => this._globalStateService.setLoading(false)))
       .subscribe(() => {
+        this.pushNotification('You have deleted products selected');
         this.resetProductsList();
+      });
+  }
+
+  deleteProduct(productId: string) {
+    this._globalStateService.setLoading(true);
+    this._productsService
+      .deleteProduct(productId)
+      .pipe(finalize(() => this._globalStateService.setLoading(false)))
+      .subscribe(() => {
+        this.pushNotification('You have deleted product');
+        this.getProductsPaginated();
       });
   }
 
@@ -242,5 +259,20 @@ export class ProductsListComponent implements OnInit, OnDestroy {
 
       this.getProductsPaginated();
     }
+  }
+
+  // Snack bar
+  pushNotification(message: string) {
+    this._snackBar.open(message, undefined, {
+      horizontalPosition: 'left',
+    });
+  }
+
+  goToProductDetail(productId: string) {
+    this._router.navigate(['view', productId], { relativeTo: this._route });
+  }
+
+  goToCreateProduct() {
+    this._router.navigate(['create'], { relativeTo: this._route });
   }
 }

@@ -13,6 +13,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatCardModule } from '@angular/material/card';
 
 import { ProductsListComponent } from './pages/products-list/products-list.component';
 import { ProductDetailComponent } from './pages/product-detail/product-detail.component';
@@ -39,6 +40,7 @@ import { ComfirmDeleteModalComponent } from './components/comfirm-delete-modal/c
     MatMenuModule,
     MatSelectModule,
     MatDialogModule,
+    MatCardModule,
   ],
 })
 export class ProductsModule {}
