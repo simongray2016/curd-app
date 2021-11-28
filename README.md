@@ -4,10 +4,13 @@ A simplified CURD application built with Angular, Angular Material and TailwindC
 
 ## Setting up development environment
 
+The application requires at least version 12 of NodeJs so you should install or update the latest version of NodeJs
+
 Run commands by steps:
 
 - `git clone https://github.com/simongray2016/curd-app.git`
 - `cd curd-app`
+- `npm install`
 
 The application uses [JSON Server](https://github.com/typicode/json-server#getting-started) for mock REST API so you should generate the server by following the steps:
 
@@ -29,6 +32,7 @@ The application uses [JSON Server](https://github.com/typicode/json-server#getti
 - Pagination
 
 # Tech stack
+
 - [Angular](https://angular.io/)
 - [Angular Material](https://material.angular.io/)
 - [TailwindCSS](https://tailwindcss.com/)
